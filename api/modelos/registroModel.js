@@ -42,7 +42,7 @@ registroModel.guardar = function (payload, callback) {
 }
 
 registroModel.listar = function (payload, callback) {
-    Mydatabase.find({},{}).then((respuesta) => {
+    Mydatabase.find({},{clave:0}).then((respuesta) => {
         return callback({state: true, mensaje: respuesta})
     }).catch((error) => {
         return callback({state: false, mensaje: error})
@@ -67,7 +67,7 @@ registroModel.minuta = function (payload, callback) {
 }
 
 registroModel.login = function (payload, callback) {
-    Mydatabase.find({cedula: payload.cedula},{_d: 0}).then((res) => {
+    Mydatabase.find({cedula: payload.cedula, clave: payload.clave},{nombres: 1, rol: 1}).then((res) => {
         return callback(res)
     })
     
@@ -75,7 +75,7 @@ registroModel.login = function (payload, callback) {
 
 registroModel.actualizarPassword = function (payload, callback) {
 
-    Mydatabase.findOneAndUpdate({cedula: payload.cedula},
+    Mydatabase.findOneAndUpdate({_id: payload._id},
         {
             clave:payload.nuevaclave
         }).then((res) => {
@@ -91,7 +91,7 @@ registroModel.buscarUsuario = function _(payload, callback) {
 }
 
 registroModel.eliminarUsuario = function (payload, callback) {
-    Mydatabase.findOneAndDelete({cedula: payload.cedula}).then((res) => {
+    Mydatabase.findOneAndDelete({_id: payload._id}).then((res) => {
         console.log(res)
         return callback({ state: true, mensaje: "Se eliminó correctamente" })
     })
@@ -99,13 +99,23 @@ registroModel.eliminarUsuario = function (payload, callback) {
 
 registroModel.actualizarDatos = function (payload, callback) {
 
-    Mydatabase.findOneAndUpdate({cedula: payload.cedula},
+    Mydatabase.findOneAndUpdate({_id: payload._id},
         {
             celular:payload.celular,
-            direccion: payload.direccion
+            direccion: payload.direccion,
+            nombres: payload.nombres,
+            rol: payload.rol
         }).then((res) => {
             console.log(res)
             return callback({ state: true, mensaje: "Datos actualizados" })
         })
 }
+
+registroModel.buscarId = function (payload, callback) {
+    Mydatabase.find({_id: payload._id}).then((posicion) => {
+        return callback (posicion)
+    })
+}
+
+
 module.exports.registroModel = registroModel

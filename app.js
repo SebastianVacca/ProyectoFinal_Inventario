@@ -35,6 +35,17 @@ app.use(cors({
 }))
 
 
+var session = require('express-session')({
+    secret: config.secretsession,
+    resave:true,
+    saveUninitialized:true,
+    cookie: {path:'/', httpOnly:true, maxAge:config.tiemposession},
+    name: config.namecookie,
+})
+
+app.use(session)
+
+
 global.db = []
 global.minuta = []
 
